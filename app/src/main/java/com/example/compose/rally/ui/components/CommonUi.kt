@@ -75,7 +75,6 @@ fun AccountRow(
  */
 @Composable
 fun BillRow(
-    modifier: Modifier = Modifier,
     name: String,
     due: String,
     amount: Float,
