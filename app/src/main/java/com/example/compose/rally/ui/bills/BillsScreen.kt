@@ -35,7 +35,6 @@ import com.example.compose.rally.ui.components.StatementBody
 @Composable
 fun BillsScreen(
     bills: List<Bill> = remember { UserData.bills },
-    onBillClick: (String) -> Unit = {},
 ) {
     StatementBody(
         modifier = Modifier.clearAndSetSemantics { contentDescription = "Bills" },
@@ -47,7 +46,6 @@ fun BillsScreen(
         rows = { bill ->
 
             BillRow(
-                modifier = Modifier.clickable { onBillClick(bill.name) },
 
                 bill.name,
                 bill.due,
