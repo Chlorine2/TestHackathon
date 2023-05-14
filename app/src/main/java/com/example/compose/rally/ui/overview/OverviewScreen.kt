@@ -16,6 +16,7 @@
 
 package com.example.compose.rally.ui.overview
 
+import PreviewApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -141,8 +142,13 @@ private fun <T> OverViewDivider(
 /**
  * The Accounts card within the Rally Overview screen.
  */
+
+
 @Composable
 private fun AccountsCard(onClickSeeAll: () -> Unit, onAccountClick: (String) -> Unit) {
+
+    PreviewApp()
+
     val amount = UserData.accounts.map { account -> account.balance }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.accounts),

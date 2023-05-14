@@ -16,7 +16,10 @@
 
 package com.example.compose.rally.data
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 
 /* Hard-coded data for the Rally sample. */
@@ -25,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 data class Account(
     val name: String,
     val number: Int,
-    val balance: Float,
+    var balance: Float,
     val color: Color
 )
 
@@ -40,8 +43,9 @@ data class Bill(
 /**
  * Pretend repository for user's data.
  */
+@SuppressLint("MutableCollectionMutableState")
 object UserData {
-    val accounts: List<Account> = listOf(
+    val accounts: MutableList<Account> = mutableListOf(
         Account(
             "Checking",
             1234,
@@ -67,7 +71,7 @@ object UserData {
             Color(0xFF37EFBA)
         )
     )
-    val bills: List<Bill> = listOf(
+    val bills: MutableList<Bill> = mutableListOf(
         Bill(
             "RedPay Credit",
             "Jan 29",
@@ -102,5 +106,13 @@ object UserData {
 
     fun getAccount(accountName: String?): Account {
         return accounts.first { it.name == accountName }
+    }
+
+    fun addAccount(name: String, number: Int, balance: Float, color: Color) {
+        accounts.add(Account(name, number, balance, color))
+    }
+
+    fun addBill(name: String, due: String, amount: Float, color: Color) {
+        bills.add(Bill(name, due, amount, color))
     }
 }
