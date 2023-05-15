@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import androidx.compose.foundation.background
-=======
->>>>>>> origin/main
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -119,7 +116,8 @@ fun IncomeWindow(onSubmit: (Account) -> Unit) {
                     val account = Account(
                         name = name,
                         balance = balance.toFloatOrNull() ?: 0f,
-                        color = color
+                        color = color,
+                        number = 1
                     )
                     onSubmit(account)
                 }

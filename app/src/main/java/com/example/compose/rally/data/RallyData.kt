@@ -33,7 +33,7 @@ data class Account(
 data class Bill(
     val name: String,
     val due: String,
-    val amount: Float,
+    var amount: Float,
     val color: Color
 )
 

@@ -16,6 +16,7 @@
 
 package com.example.compose.rally.ui.overview
 
+import PreviewApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +45,7 @@ import com.example.compose.rally.R
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
+import com.example.compose.rally.ui.components.DepositRow
 import com.example.compose.rally.ui.components.formatAmount
 import java.util.Locale
 
@@ -203,7 +205,6 @@ private fun AccountsCard(onClickSeeAll: () -> Unit, onAccountClick: (String) -> 
         AccountRow(
             modifier = Modifier.clickable { onAccountClick(account.name) },
             name = account.name,
-            number = account.number,
             amount = account.balance,
             color = account.color
         )
@@ -214,7 +215,7 @@ private fun AccountsCard(onClickSeeAll: () -> Unit, onAccountClick: (String) -> 
  * The Bills card within the Rally Overview screen.
  */
 @Composable
-private fun BillsCard(onClickSeeAll: () -> Unit) {
+private fun BillsCard(onClickSeeAll: () -> Unit,  onBillClick: (String) -> Unit) {
     val amount = UserData.bills.map { bill -> bill.amount }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.bills),
@@ -227,7 +228,6 @@ private fun BillsCard(onClickSeeAll: () -> Unit) {
         BillRow(
             modifier = Modifier.clickable { onBillClick(bill.name) },
             name = bill.name,
-            due = bill.due,
             amount = bill.amount,
             color = bill.color
         )
