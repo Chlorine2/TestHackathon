@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,7 +29,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -56,7 +54,6 @@ import java.text.DecimalFormat
 fun AccountRow(
     modifier: Modifier = Modifier,
     name: String,
-    number: Int,
     amount: Float,
     color: Color
 ) {
@@ -64,7 +61,7 @@ fun AccountRow(
         modifier = modifier,
         color = color,
         title = name,
-        subtitle = stringResource(R.string.account_redacted) + AccountDecimalFormat.format(number),
+        subtitle = stringResource(R.string.account_redacted),
         amount = amount,
         negative = false
     )

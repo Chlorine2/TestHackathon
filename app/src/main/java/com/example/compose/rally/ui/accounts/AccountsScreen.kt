@@ -61,7 +61,6 @@ fun AccountsScreen(
                     onAccountClick(account.name)
                 },
                 name = account.name,
-                number = account.number,
                 amount = account.balance,
                 color = account.color
             )
@@ -94,7 +93,6 @@ fun SingleAccountScreen(
         Column() {
             AccountRow(
                 name = row.name,
-                number = row.number,
                 amount = row.balance,
                 color = row.color
             )
