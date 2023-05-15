@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import androidx.compose.foundation.background
+=======
+>>>>>>> origin/main
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,10 +20,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.data.Account
 import com.example.compose.rally.data.Bill
 import com.example.compose.rally.data.UserData
+import com.example.compose.rally.data.UserData.accounts
+import com.example.compose.rally.data.UserData.addBill
+import com.example.compose.rally.data.UserData.bills
 
 @Composable
 fun TransactionCard(onShowIncomeWindowChanged: (Boolean) -> Unit,     onShowBillsWindowChanged: (Boolean) -> Unit
@@ -104,13 +111,18 @@ fun IncomeWindow(onSubmit: (Account) -> Unit) {
 
         Button(
             onClick = {
-                val account = Account(
-                    name = name,
-                    number = number.toIntOrNull() ?: 0,
-                    balance = balance.toFloatOrNull() ?: 0f,
-                    color = color
-                )
-                onSubmit(account)
+                val existingAccount = accounts.find { it.name == name }
+                if (existingAccount != null) {
+                    val updatedBalance = existingAccount.balance + (balance.toFloatOrNull() ?: 0f)
+                    existingAccount.balance = updatedBalance
+                } else {
+                    val account = Account(
+                        name = name,
+                        balance = balance.toFloatOrNull() ?: 0f,
+                        color = color
+                    )
+                    onSubmit(account)
+                }
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {
@@ -118,6 +130,7 @@ fun IncomeWindow(onSubmit: (Account) -> Unit) {
         }
     }
 }
+
 @Composable
 fun BillsWindow(
     onSubmit: (Bill) -> Unit,
@@ -161,18 +174,25 @@ fun BillsWindow(
         ) {
             Button(
                 onClick = {
-                    val bill = Bill(
-                        name = name,
-                        due = due,
-                        amount = amount.toFloatOrNull() ?: 0f,
-                        color = color
-                    )
-                    onSubmit(bill)
+                    val existingBill = bills.find { it.name == name }
+                    if (existingBill != null) {
+                        val updatedAmount = existingBill.amount + (amount.toFloatOrNull() ?: 0f)
+                        existingBill.amount = updatedAmount
+                    } else {
+                        val bill = Bill(
+                            name = name,
+                            due = due,
+                            amount = amount.toFloatOrNull() ?: 0f,
+                            color = color
+                        )
+                        onSubmit(bill)
+                    }
                 },
                 modifier = Modifier.padding(top = 16.dp)
             ) {
                 Text(text = "Submit")
             }
+
             Button(
                 onClick = onCancel,
                 modifier = Modifier.padding(top = 16.dp)

@@ -71,6 +71,7 @@ fun DepositRow(
 fun AccountRow(
     modifier: Modifier = Modifier,
     name: String,
+    number: Int,
     amount: Float,
     color: Color
 ) {
@@ -78,6 +79,7 @@ fun AccountRow(
         modifier = modifier,
         color = color,
         title = name,
+        subtitle = stringResource(R.string.account_redacted) + AccountDecimalFormat.format(number),
         amount = amount,
         negative = false
     )
@@ -90,6 +92,7 @@ fun AccountRow(
 fun BillRow(
     modifier: Modifier = Modifier,
     name: String,
+    due: String,
     amount: Float,
     color: Color
 ) {
@@ -97,6 +100,7 @@ fun BillRow(
         modifier = modifier,
         color = color,
         title = name,
+        subtitle = "Due $due",
         amount = amount,
         negative = true
     )
@@ -107,6 +111,7 @@ private fun BaseRow(
     modifier: Modifier = Modifier,
     color: Color,
     title: String,
+    subtitle: String,
     amount: Float,
     negative: Boolean
 ) {
@@ -120,7 +125,7 @@ private fun BaseRow(
                 .height(68.dp)
                 .clearAndSetSemantics {
                     contentDescription =
-                        "$title account ending in ${1}, current balance $Sign$formattedAmount"
+                        "$title account ending in ${subtitle}, current balance $Sign$formattedAmount"
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {
