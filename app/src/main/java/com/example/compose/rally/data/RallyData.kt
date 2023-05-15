@@ -16,10 +16,7 @@
 
 package com.example.compose.rally.data
 
-import android.annotation.SuppressLint
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 
 /* Hard-coded data for the Rally sample. */
@@ -36,6 +33,20 @@ data class Account(
 data class Bill(
     val name: String,
     val due: String,
+    val amount: Float,
+    val color: Color
+)
+
+@Immutable
+data class Deposit(
+    val name: String,
+    val amount: Float,
+    val color: Color
+)
+
+@Immutable
+data class Credit(
+    val name: String,
     val amount: Float,
     val color: Color
 )
@@ -103,6 +114,64 @@ object UserData {
         )
     )
 
+    var deposits: MutableList<Deposit> = mutableListOf(
+        Deposit(
+            "MonoBank",
+            45.36f,
+            Color(0xFF004940)
+        ),
+        Deposit(
+            "Privat",
+            1200f,
+            Color(0xFF005D57)
+        ),
+        Deposit(
+            "KredoBank",
+            87.33f,
+            Color(0xFF04B97F)
+        ),
+        Deposit(
+            "OschadBank",
+            400f,
+            Color(0xFF37EFBA)
+        ),
+        Deposit(
+            "LvivBank",
+            77.4f,
+            Color(0xFF01D52B)
+        )
+    )
+    var credits: MutableList<Credit> = mutableListOf(
+        Credit(
+            "RedPay Credit",
+            45.36f,
+            Color(0xFFFFDC78)
+        ),
+        Credit(
+            "Rent",
+            1200f,
+            Color(0xFFFF6951)
+        ),
+        Credit(
+            "TabFine Credit",
+            87.33f,
+            Color(0xFFFFD7D0)
+        ),
+        Credit(
+            "ABC Loans",
+            400f,
+            Color(0xFFFFAC12)
+        ),
+        Credit(
+            "ABC Loans 2",
+            77.4f,
+            Color(0xFFFFAC12)
+        )
+
+
+    )
+
+
     fun getAccount(accountName: String?): Account {
         return accounts.first { it.name == accountName }
     }
@@ -112,11 +181,16 @@ object UserData {
     }
 
     fun addBill(name: String, due: String, amount: Float, color: Color) {
-        bills.add(Bill(name, due, amount, color))
+        this.bills.add(Bill(name, due, amount, color))
     }
 
     fun getBill(billName: String?): Bill {
-        return bills.first { it.name == billName }
+        return this.bills.first { it.name == billName }
     }
-
+    fun getDeposit(depositName: String?): Deposit {
+        return this.deposits.first { it.name == depositName }
+    }
+    fun getCredit(creditName: String?): Credit {
+        return this.credits.first { it.name == creditName }
+    }
 }

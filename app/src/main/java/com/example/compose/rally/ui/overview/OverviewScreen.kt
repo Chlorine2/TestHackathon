@@ -19,9 +19,7 @@ package com.example.compose.rally.ui.overview
 import PreviewApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,19 +28,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -54,15 +43,20 @@ import com.example.compose.rally.R
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
+import com.example.compose.rally.ui.components.DepositRow
 import com.example.compose.rally.ui.components.formatAmount
-import java.util.Locale
 
 @Composable
 fun OverviewScreen(
     onClickSeeAllAccounts: () -> Unit = {},
     onClickSeeAllBills: () -> Unit = {},
+    onClickSeeAllDeposits: () -> Unit = {},
+    onClickSeeAllCredits: () -> Unit = {},
     onAccountClick: (String) -> Unit = {},
-    onBillClick: (String) -> Unit = {}
+    onBillClick: (String) -> Unit = {},
+    onDepositClick: (String) -> Unit = {},
+    onCreditClick: (String) -> Unit = {}
+
 ) {
     Column(
         modifier = Modifier
@@ -70,6 +64,9 @@ fun OverviewScreen(
             .verticalScroll(rememberScrollState())
             .semantics { contentDescription = "Overview Screen" }
     ) {
+
+        PreviewApp()
+
         Spacer(Modifier.height(RallyDefaultPadding))
         AccountsCard(
             onClickSeeAll = onClickSeeAllAccounts,
@@ -81,14 +78,19 @@ fun OverviewScreen(
             onBillClick = onBillClick
 
         )
+        Spacer(Modifier.height(RallyDefaultPadding))
+
+        DepositsCard(onClickSeeAll = onClickSeeAllDeposits, onDepositClick = onDepositClick)
+
+        Spacer(Modifier.height(RallyDefaultPadding))
+
+        CreditsCard(onClickSeeAll = onClickSeeAllCredits, onCreditClick = onCreditClick)
     }
 }
 
 /**
  * The Alerts card within the Rally Overview screen.
  */
-
-
 
 
 @Composable
@@ -145,12 +147,48 @@ private fun <T> OverViewDivider(
 /**
  * The Accounts card within the Rally Overview screen.
  */
+@Composable
+private fun CreditsCard(onClickSeeAll: () -> Unit, onCreditClick: (String) -> Unit) {
 
+    val amount = UserData.credits.map { credit -> credit.amount }.sum()
+    OverviewScreenCard(
+        title = stringResource(R.string.credits),
+        amount = amount,
+        onClickSeeAll = onClickSeeAll,
+        data = UserData.credits,
+        colors = { it.color },
+        values = { it.amount }
+    ) { credit ->
+        DepositRow(
+            modifier = Modifier.clickable { onCreditClick(credit.name) },
+            name = credit.name,
+            amount = credit.amount,
+            color = credit.color
+        )
+    }
+}
+@Composable
+private fun DepositsCard(onClickSeeAll: () -> Unit, onDepositClick: (String) -> Unit) {
 
+    val amount = UserData.deposits.map { deposit -> deposit.amount }.sum()
+    OverviewScreenCard(
+        title = stringResource(R.string.deposits),
+        amount = amount,
+        onClickSeeAll = onClickSeeAll,
+        data = UserData.deposits,
+        colors = { it.color },
+        values = { it.amount }
+    ) { deposit ->
+        DepositRow(
+            modifier = Modifier.clickable { onDepositClick(deposit.name) },
+            name = deposit.name,
+            amount = deposit.amount,
+            color = deposit.color
+        )
+    }
+}
 @Composable
 private fun AccountsCard(onClickSeeAll: () -> Unit, onAccountClick: (String) -> Unit) {
-
-    PreviewApp()
 
     val amount = UserData.accounts.map { account -> account.balance }.sum()
     OverviewScreenCard(
@@ -164,7 +202,6 @@ private fun AccountsCard(onClickSeeAll: () -> Unit, onAccountClick: (String) -> 
         AccountRow(
             modifier = Modifier.clickable { onAccountClick(account.name) },
             name = account.name,
-            number = account.number,
             amount = account.balance,
             color = account.color
         )
@@ -188,7 +225,6 @@ private fun BillsCard(onClickSeeAll: () -> Unit, onBillClick: (String) -> Unit) 
         BillRow(
             modifier = Modifier.clickable { onBillClick(bill.name) },
             name = bill.name,
-            due = bill.due,
             amount = bill.amount,
             color = bill.color
         )

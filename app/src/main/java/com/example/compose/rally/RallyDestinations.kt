@@ -43,6 +43,14 @@ object Overview : RallyDestination {
     override val route = "overview"
 }
 
+object Deposits : RallyDestination {
+    override val icon = Icons.Filled.PieChart
+    override val route = "deposits"
+}
+object Credits : RallyDestination {
+    override val icon = Icons.Filled.PieChart
+    override val route = "deposits"
+}
 object Accounts : RallyDestination {
     override val icon = Icons.Filled.AttachMoney
     override val route = "accounts"
@@ -83,6 +91,35 @@ object SingleBill : RallyDestination {
     )
 }
 
+object SingleDeposit : RallyDestination {
+    // Added for simplicity, this icon will not in fact be used, as SingleAccount isn't
+    // part of the RallyTabRow selection
+    override val icon = Icons.Filled.Money
+    override val route = "single_deposit"
+    const val accountTypeArg = "deposit_type"
+    val routeWithArgs = "$route/{$accountTypeArg}"
+    val arguments = listOf(
+        navArgument(accountTypeArg) { type = NavType.StringType }
+    )
+    val deepLinks = listOf(
+        navDeepLink { uriPattern = "rally://$route/{$accountTypeArg}" }
+    )
+}
+
+object SingleCredit : RallyDestination {
+    // Added for simplicity, this icon will not in fact be used, as SingleAccount isn't
+    // part of the RallyTabRow selection
+    override val icon = Icons.Filled.Money
+    override val route = "single_credit"
+    const val accountTypeArg = "credit_type"
+    val routeWithArgs = "$route/{$accountTypeArg}"
+    val arguments = listOf(
+        navArgument(accountTypeArg) { type = NavType.StringType }
+    )
+    val deepLinks = listOf(
+        navDeepLink { uriPattern = "rally://$route/{$accountTypeArg}" }
+    )
+}
 
 // Screens to be displayed in the top RallyTabRow
 val rallyTabRowScreens = listOf(Overview, Accounts, Bills)

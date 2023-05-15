@@ -20,6 +20,8 @@
     <string name="due">Due</string>
     <string name="account_redacted">• • • • • </string>
     <string name="accounts">Accounts</string>
+    <string name="deposits">Deposits</string>
+    <string name="credits">Credits</string>
     <string name="bills">Bills</string>
     <string name="sort">Sort</string>
     <string name="see_all">SEE ALL</string>

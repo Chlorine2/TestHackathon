@@ -16,7 +16,6 @@
 
 package com.example.compose.rally.ui.bills
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,9 +27,6 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,14 +35,10 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.compose.rally.Overview
 import com.example.compose.rally.R
 import com.example.compose.rally.data.Bill
 import com.example.compose.rally.data.UserData
-import com.example.compose.rally.data.UserData.accounts
 import com.example.compose.rally.data.UserData.bills
-import com.example.compose.rally.navigateSingleTopTo
-import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
 import com.example.compose.rally.ui.components.StatementBody
 
@@ -58,7 +50,7 @@ fun BillsScreen(
     bills: List<Bill> =  UserData.bills,
     onBillClick: (String) -> Unit = {},
 
-) {
+    ) {
     StatementBody(
         modifier = Modifier.clearAndSetSemantics { contentDescription = "Bills" },
         items = UserData.bills,
@@ -73,7 +65,6 @@ fun BillsScreen(
                     onBillClick(bill.name)
                 },
                 bill.name,
-                bill.due,
                 bill.amount,
                 bill.color
             )
@@ -103,7 +94,6 @@ fun SingleBillScreen(
         Column() {
             BillRow(
                 name = row.name,
-                due = row.due,
                 amount = row.amount,
                 color = row.color
             )

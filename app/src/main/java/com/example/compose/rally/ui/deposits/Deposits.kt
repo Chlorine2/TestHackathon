@@ -1,20 +1,4 @@
-/*
- * Copyright 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.example.compose.rally.ui.accounts
+package com.example.compose.rally.ui.deposits
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -31,73 +15,70 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.compose.rally.R
+import com.example.compose.rally.data.Deposit
 import com.example.compose.rally.data.UserData
-import com.example.compose.rally.ui.components.AccountRow
+import com.example.compose.rally.ui.components.BillRow
+import com.example.compose.rally.ui.components.DepositRow
 import com.example.compose.rally.ui.components.StatementBody
 
-/**
- * The Accounts screen.
- */
 @Composable
-fun AccountsScreen(
-    onAccountClick: (String) -> Unit = {},
-) {
-    val amountsTotal = remember { UserData.accounts.map { account -> account.balance }.sum() }
+fun DepositsScreen(
+    bills: List<Deposit> =  UserData.deposits,
+    onDepositClick: (String) -> Unit = {},
+
+    ) {
     StatementBody(
-        modifier = Modifier.semantics { contentDescription = "Accounts Screen" },
-        items = UserData.accounts,
-        amounts = { account -> account.balance },
-        colors = { account -> account.color },
-        amountsTotal = amountsTotal,
-        circleLabel = stringResource(R.string.total),
-        rows = { account ->
-            AccountRow(
+        modifier = Modifier.clearAndSetSemantics { contentDescription = "Deposits" },
+        items = UserData.deposits,
+        amounts = { deposit -> deposit.amount },
+        colors = { deposit -> deposit.color },
+        amountsTotal = bills.map { deposit -> deposit.amount }.sum(),
+        circleLabel = stringResource(R.string.due),
+        rows = { deposit ->
+
+            DepositRow(
                 modifier = Modifier.clickable {
-                    onAccountClick(account.name)
+                    onDepositClick(deposit.name)
                 },
-                name = account.name,
-                amount = account.balance,
-                color = account.color
+                deposit.name,
+                deposit.amount,
+                deposit.color
             )
         }
     )
 }
 
-/**
- * Detail screen for a single account.
- */
 @Composable
-fun SingleAccountScreen(
-    accountType: String? = UserData.accounts.first().name,
-    navController : NavHostController
+fun SingleDepositScreen(
+    depositType: String? = UserData.deposits.first().name,
+    navController: NavHostController
 ) {
-    val account = remember(accountType) { UserData.getAccount(accountType) }
+    val deposit = remember(depositType) { UserData.getDeposit(depositType) }
 
-    val deleteAccount: () -> Unit = {
-        UserData.accounts.remove(account)
+    val deleteDeposit: () -> Unit = {
+        UserData.deposits.remove(deposit)
         navController.popBackStack()
     }
 
     StatementBody(
-        items = listOf(account),
-        colors = { account.color },
-        amounts = { account.balance },
-        amountsTotal = account.balance,
-        circleLabel = account.name,
+        items = listOf(deposit),
+        colors = { deposit.color },
+        amounts = { deposit.amount },
+        amountsTotal = deposit.amount,
+        circleLabel = deposit.name,
     ) { row ->
         Column() {
-            AccountRow(
+            DepositRow(
                 name = row.name,
-                amount = row.balance,
+                amount = row.amount,
                 color = row.color
             )
-            Button(
-                onClick = {}, shape = RoundedCornerShape(100.dp),
+            Button(onClick = {}, shape = RoundedCornerShape(100.dp),
                 modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth().requiredHeight(65.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface,),
                 elevation = ButtonDefaults.elevation(
@@ -110,7 +91,8 @@ fun SingleAccountScreen(
             }
 
             Button(
-                onClick = deleteAccount, shape = RoundedCornerShape(100.dp),
+                onClick = deleteDeposit,
+                shape = RoundedCornerShape(100.dp),
                 modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth().requiredHeight(65.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFB82100)),
                 elevation = ButtonDefaults.elevation(
@@ -122,5 +104,6 @@ fun SingleAccountScreen(
                 Text(text = "Delete", color = Color.White)
             }
         }
+
     }
 }

@@ -26,6 +26,10 @@ import com.example.compose.rally.ui.accounts.AccountsScreen
 import com.example.compose.rally.ui.accounts.SingleAccountScreen
 import com.example.compose.rally.ui.bills.BillsScreen
 import com.example.compose.rally.ui.bills.SingleBillScreen
+import com.example.compose.rally.ui.credits.CreditsScreen
+import com.example.compose.rally.ui.credits.SingleCreditScreen
+import com.example.compose.rally.ui.deposits.DepositsScreen
+import com.example.compose.rally.ui.deposits.SingleDepositScreen
 import com.example.compose.rally.ui.overview.OverviewScreen
 
 @Composable
@@ -46,11 +50,25 @@ fun RallyNavHost(
                 onClickSeeAllBills = {
                     navController.navigateSingleTopTo(Bills.route)
                 },
+                 onClickSeeAllDeposits = {
+                     navController.navigateSingleTopTo(Deposits.route)
+//
+                 },
+                onClickSeeAllCredits = {
+                    navController.navigateSingleTopTo(Credits.route)
+//
+                },
                 onAccountClick = { accountType ->
                     navController.navigateToSingleAccount(accountType)
                 },
                 onBillClick = { billType ->
                     navController.navigateToSingleBill(billType)
+                },
+                onDepositClick = { depositType ->
+                    navController.navigateToSingleDeposit(depositType)
+                },
+                onCreditClick = { depositType ->
+                    navController.navigateToSingleCredit(depositType)
                 }
             )
         }
@@ -67,6 +85,20 @@ fun RallyNavHost(
                     navController.navigateToSingleBill(billType)
                 },
 
+            )
+        }
+        composable(route = Deposits.route){
+            DepositsScreen(
+                onDepositClick = { depositsType ->
+                    navController.navigateToSingleDeposit(depositsType)
+                },
+            )
+        }
+        composable(route = Credits.route){
+            CreditsScreen(
+                onDepositClick = { creditType ->
+                    navController.navigateToSingleCredit(creditType)
+                },
             )
         }
         composable(
@@ -89,7 +121,30 @@ fun RallyNavHost(
                 billType, navController
             )
         }
+        composable(
+            route = SingleDeposit.routeWithArgs,
+            arguments = SingleDeposit.arguments,
+            deepLinks = SingleDeposit.deepLinks
+        ) { navBackStackEntry ->
+            val depositType =
+                navBackStackEntry.arguments?.getString(SingleDeposit.accountTypeArg)
+            SingleDepositScreen(
+                depositType, navController
+            )
+        }
+        composable(
+            route = SingleCredit.routeWithArgs,
+            arguments = SingleCredit.arguments,
+            deepLinks = SingleCredit.deepLinks
+        ) { navBackStackEntry ->
+            val depositType =
+                navBackStackEntry.arguments?.getString(SingleCredit.accountTypeArg)
+            SingleCreditScreen(
+                depositType, navController
+            )
+        }
     }
+
 }
 
 fun NavHostController.navigateSingleTopTo(route: String) =
@@ -115,4 +170,12 @@ private fun NavHostController.navigateToSingleAccount(accountType: String) {
 
 private fun NavHostController.navigateToSingleBill(billType: String) {
     this.navigateSingleTopTo("${SingleBill.route}/$billType")
+}
+
+private fun NavHostController.navigateToSingleDeposit(depositType: String) {
+    this.navigateSingleTopTo("${SingleDeposit.route}/$depositType")
+}
+
+private fun NavHostController.navigateToSingleCredit(depositType: String) {
+    this.navigateSingleTopTo("${SingleCredit.route}/$depositType")
 }
