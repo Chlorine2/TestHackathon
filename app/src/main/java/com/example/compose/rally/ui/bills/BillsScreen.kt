@@ -16,16 +16,37 @@
 
 package com.example.compose.rally.ui.bills
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.compose.rally.Overview
 import com.example.compose.rally.R
 import com.example.compose.rally.data.Bill
 import com.example.compose.rally.data.UserData
+import com.example.compose.rally.data.UserData.accounts
+import com.example.compose.rally.data.UserData.bills
+import com.example.compose.rally.navigateSingleTopTo
+import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
 import com.example.compose.rally.ui.components.StatementBody
 
@@ -34,11 +55,13 @@ import com.example.compose.rally.ui.components.StatementBody
  */
 @Composable
 fun BillsScreen(
-    bills: List<Bill> = remember { UserData.bills },
+    bills: List<Bill> =  UserData.bills,
+    onBillClick: (String) -> Unit = {},
+
 ) {
     StatementBody(
         modifier = Modifier.clearAndSetSemantics { contentDescription = "Bills" },
-        items = bills,
+        items = UserData.bills,
         amounts = { bill -> bill.amount },
         colors = { bill -> bill.color },
         amountsTotal = bills.map { bill -> bill.amount }.sum(),
@@ -46,7 +69,9 @@ fun BillsScreen(
         rows = { bill ->
 
             BillRow(
-
+                modifier = Modifier.clickable {
+                    onBillClick(bill.name)
+                },
                 bill.name,
                 bill.due,
                 bill.amount,
@@ -54,4 +79,60 @@ fun BillsScreen(
             )
         }
     )
+}
+
+@Composable
+fun SingleBillScreen(
+    billType: String? = UserData.bills.first().name,
+    navController: NavHostController
+) {
+    val bill = remember(billType) { UserData.getBill(billType) }
+
+    val deleteBill: () -> Unit = {
+        bills.remove(bill)
+        navController.popBackStack()
+    }
+
+    StatementBody(
+        items = listOf(bill),
+        colors = { bill.color },
+        amounts = { bill.amount },
+        amountsTotal = bill.amount,
+        circleLabel = bill.name,
+    ) { row ->
+        Column() {
+            BillRow(
+                name = row.name,
+                due = row.due,
+                amount = row.amount,
+                color = row.color
+            )
+            Button(onClick = {}, shape = RoundedCornerShape(100.dp),
+                modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth().requiredHeight(65.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface,),
+                elevation = ButtonDefaults.elevation(
+                    defaultElevation = 6.dp,
+                    pressedElevation = 8.dp,
+                    disabledElevation = 0.dp
+                )
+            ) {
+                Text(text = "Edit")
+            }
+
+            Button(
+                onClick = deleteBill,
+                shape = RoundedCornerShape(100.dp),
+                modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth().requiredHeight(65.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFB82100)),
+                elevation = ButtonDefaults.elevation(
+                    defaultElevation = 6.dp,
+                    pressedElevation = 8.dp,
+                    disabledElevation = 0.dp
+                )
+            ) {
+                Text(text = "Delete", color = Color.White)
+            }
+        }
+
+    }
 }

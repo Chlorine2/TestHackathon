@@ -43,9 +43,8 @@ data class Bill(
 /**
  * Pretend repository for user's data.
  */
-@SuppressLint("MutableCollectionMutableState")
 object UserData {
-    val accounts: MutableList<Account> = mutableListOf(
+    var accounts: MutableList<Account> = mutableListOf(
         Account(
             "Checking",
             1234,
@@ -71,7 +70,7 @@ object UserData {
             Color(0xFF37EFBA)
         )
     )
-    val bills: MutableList<Bill> = mutableListOf(
+    var bills: MutableList<Bill> = mutableListOf(
         Bill(
             "RedPay Credit",
             "Jan 29",
@@ -115,4 +114,9 @@ object UserData {
     fun addBill(name: String, due: String, amount: Float, color: Color) {
         bills.add(Bill(name, due, amount, color))
     }
+
+    fun getBill(billName: String?): Bill {
+        return bills.first { it.name == billName }
+    }
+
 }
