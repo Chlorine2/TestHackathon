@@ -72,7 +72,7 @@ fun <T> StatementBody(
             }
         }
         Spacer(Modifier.height(10.dp))
-        Card {
+        Card(backgroundColor = MaterialTheme.colors.background) {
             Column(modifier = Modifier.padding(12.dp)) {
                 items.forEach { item ->
                     rows(item)

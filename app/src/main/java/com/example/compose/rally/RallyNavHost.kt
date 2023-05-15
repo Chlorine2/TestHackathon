@@ -25,6 +25,7 @@ import androidx.navigation.compose.composable
 import com.example.compose.rally.ui.accounts.AccountsScreen
 import com.example.compose.rally.ui.accounts.SingleAccountScreen
 import com.example.compose.rally.ui.bills.BillsScreen
+import com.example.compose.rally.ui.bills.SingleBillScreen
 import com.example.compose.rally.ui.overview.OverviewScreen
 
 @Composable
@@ -47,6 +48,9 @@ fun RallyNavHost(
                 },
                 onAccountClick = { accountType ->
                     navController.navigateToSingleAccount(accountType)
+                },
+                onBillClick = { billType ->
+                    navController.navigateToSingleBill(billType)
                 }
             )
         }
@@ -58,7 +62,12 @@ fun RallyNavHost(
             )
         }
         composable(route = Bills.route) {
-            BillsScreen()
+            BillsScreen(
+                onBillClick = { billType ->
+                    navController.navigateToSingleBill(billType)
+                },
+
+            )
         }
         composable(
             route = SingleAccount.routeWithArgs,
@@ -67,7 +76,18 @@ fun RallyNavHost(
         ) { navBackStackEntry ->
             val accountType =
                 navBackStackEntry.arguments?.getString(SingleAccount.accountTypeArg)
-            SingleAccountScreen(accountType)
+            SingleAccountScreen(accountType, navController)
+        }
+        composable(
+            route = SingleBill.routeWithArgs,
+            arguments = SingleBill.arguments,
+            deepLinks = SingleBill.deepLinks
+        ) { navBackStackEntry ->
+            val billType =
+                navBackStackEntry.arguments?.getString(SingleBill.accountTypeArg)
+            SingleBillScreen(
+                billType, navController
+            )
         }
     }
 }
@@ -91,4 +111,8 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 
 private fun NavHostController.navigateToSingleAccount(accountType: String) {
     this.navigateSingleTopTo("${SingleAccount.route}/$accountType")
+}
+
+private fun NavHostController.navigateToSingleBill(billType: String) {
+    this.navigateSingleTopTo("${SingleBill.route}/$billType")
 }
