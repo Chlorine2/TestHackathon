@@ -102,9 +102,6 @@ fun OverviewScreen(
 
         TransactionWindow()
         Spacer(Modifier.height(RallyDefaultPadding))
-        TransactionWindow2()
-
-        Spacer(Modifier.height(RallyDefaultPadding))
         AccountsCard(
             onClickSeeAll = onClickSeeAllAccounts,
             onAccountClick = onAccountClick
@@ -117,6 +114,8 @@ fun OverviewScreen(
         )
         Spacer(Modifier.height(RallyDefaultPadding))
 
+        TransactionWindow2()
+        Spacer(Modifier.height(RallyDefaultPadding))
         DepositsCard(onClickSeeAll = onClickSeeAllDeposits, onDepositClick = onDepositClick)
 
         Spacer(Modifier.height(RallyDefaultPadding))
@@ -271,14 +270,14 @@ private fun CreditsCard(onClickSeeAll: () -> Unit, onCreditClick: (String) -> Un
         amount = amount,
         onClickSeeAll = onClickSeeAll,
         data = UserData.credits,
-        colors = { it.color },
+        colors = { Color(it.color) },
         values = { it.amount }
     ) { credit ->
         DepositRow(
             modifier = Modifier.clickable { onCreditClick(credit.name) },
             name = credit.name,
             amount = credit.amount,
-            color = credit.color
+            color = Color(credit.color)
         )
     }
 }

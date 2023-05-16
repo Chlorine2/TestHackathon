@@ -93,6 +93,7 @@ class RallyActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         val sharedPreferences = getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+        sharedPreferences.saveAppState(UserData.accounts, Accounts.route)
         sharedPreferences.saveAppState(UserData.credits, Credits.route)
         sharedPreferences.saveAppState(UserData.deposits, Deposits.route)
         sharedPreferences.saveAppState(UserData.bills, Bills.route)
