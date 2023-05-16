@@ -16,7 +16,9 @@
 
 package com.example.compose.rally.ui.overview
 
-import PreviewApp
+
+import TransactionWindow
+import TransactionWindow2
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,6 +51,10 @@ import com.example.compose.rally.ui.components.DepositRow
 import com.example.compose.rally.ui.components.formatAmount
 import java.util.Locale
 
+
+
+
+
 @Composable
 fun OverviewScreen(
     onClickSeeAllAccounts: () -> Unit = {},
@@ -68,7 +74,9 @@ fun OverviewScreen(
             .semantics { contentDescription = "Overview Screen" }
     ) {
 
-        PreviewApp()
+        TransactionWindow()
+        Spacer(Modifier.height(RallyDefaultPadding))
+        TransactionWindow2()
 
         Spacer(Modifier.height(RallyDefaultPadding))
         AccountsCard(

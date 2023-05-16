@@ -49,7 +49,7 @@ object Deposits : RallyDestination {
 }
 object Credits : RallyDestination {
     override val icon = Icons.Filled.PieChart
-    override val route = "deposits"
+    override val route = "credits"
 }
 object Accounts : RallyDestination {
     override val icon = Icons.Filled.AttachMoney
@@ -122,4 +122,4 @@ object SingleCredit : RallyDestination {
 }
 
 // Screens to be displayed in the top RallyTabRow
-val rallyTabRowScreens = listOf(Overview, Accounts, Bills)
+val rallyTabRowScreens = listOf(Overview, Accounts, Bills, Deposits, Credits)

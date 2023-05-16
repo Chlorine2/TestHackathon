@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 @Immutable
 data class Account(
     val name: String,
-    val number: Int,
     var balance: Float,
     val color: Color
 )
@@ -40,14 +39,14 @@ data class Bill(
 @Immutable
 data class Deposit(
     val name: String,
-    val amount: Float,
+    var amount: Float,
     val color: Color
 )
 
 @Immutable
 data class Credit(
     val name: String,
-    val amount: Float,
+    var amount: Float,
     val color: Color
 )
 
@@ -58,25 +57,21 @@ object UserData {
     var accounts: MutableList<Account> = mutableListOf(
         Account(
             "Checking",
-            1234,
             2215.13f,
             Color(0xFF004940)
         ),
         Account(
             "Home Savings",
-            5678,
             8676.88f,
             Color(0xFF005D57)
         ),
         Account(
             "Car Savings",
-            9012,
             987.48f,
             Color(0xFF04B97F)
         ),
         Account(
             "Vacation",
-            3456,
             253f,
             Color(0xFF37EFBA)
         )
@@ -176,13 +171,21 @@ object UserData {
         return accounts.first { it.name == accountName }
     }
 
-    fun addAccount(name: String, number: Int, balance: Float, color: Color) {
-        accounts.add(Account(name, number, balance, color))
-    }
-
-    fun addBill(name: String, due: String, amount: Float, color: Color) {
-        this.bills.add(Bill(name, due, amount, color))
-    }
+   // fun addAccount(name: String, balance: Float, color: Color) {
+   //     accounts.add(Account(name, balance, color))
+   // }
+//
+   // fun addBill(name: String, due: String, amount: Float, color: Color) {
+   //     this.bills.add(Bill(name, due, amount, color))
+   // }
+//
+   // fun addDeposit(name: String,  amount: Float, color: Color) {
+   //     this.deposits.add(Deposit(name, amount, color))
+   // }
+//
+   // fun addCredit(name: String, amount: Float, color: Color) {
+   //     this.credits.add(Credit(name, amount, color))
+   // }
 
     fun getBill(billName: String?): Bill {
         return this.bills.first { it.name == billName }
