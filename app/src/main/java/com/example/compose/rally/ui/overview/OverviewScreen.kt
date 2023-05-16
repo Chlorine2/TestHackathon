@@ -17,13 +17,13 @@
 package com.example.compose.rally.ui.overview
 
 
+
+import ExchangeRate
 import TransactionWindow
 import TransactionWindow2
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +36,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -49,10 +54,6 @@ import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
 import com.example.compose.rally.ui.components.DepositRow
 import com.example.compose.rally.ui.components.formatAmount
-import java.util.Locale
-
-
-
 
 
 @Composable
@@ -64,9 +65,20 @@ fun OverviewScreen(
     onAccountClick: (String) -> Unit = {},
     onBillClick: (String) -> Unit = {},
     onDepositClick: (String) -> Unit = {},
-    onCreditClick: (String) -> Unit = {}
-
+    onCreditClick: (String) -> Unit = {},
 ) {
+
+    var exchangeRates by remember { mutableStateOf(emptyList<ExchangeRate>()) }
+
+    LaunchedEffect(Unit) {
+        try {
+            val response = ApiService.ApiServiceBuilder.apiService.getExchangeRates()
+            exchangeRates = response // Update the exchange rates state variable
+        } catch (e: Exception) {
+            // Error handling
+        }
+    }
+
     Column(
         modifier = Modifier
             .padding(12.dp)
@@ -74,34 +86,79 @@ fun OverviewScreen(
             .semantics { contentDescription = "Overview Screen" }
     ) {
 
-        TransactionWindow()
-        Spacer(Modifier.height(RallyDefaultPadding))
-        TransactionWindow2()
 
-        Spacer(Modifier.height(RallyDefaultPadding))
-        AccountsCard(
-            onClickSeeAll = onClickSeeAllAccounts,
-            onAccountClick = onAccountClick
-        )
-        Spacer(Modifier.height(RallyDefaultPadding))
-        BillsCard(
-            onClickSeeAll = onClickSeeAllBills,
-            onBillClick = onBillClick
 
-        )
-        Spacer(Modifier.height(RallyDefaultPadding))
+        ExchangeRatesCard(exchangeRates = exchangeRates)
 
-        DepositsCard(onClickSeeAll = onClickSeeAllDeposits, onDepositClick = onDepositClick)
+            TransactionWindow()
+            Spacer(Modifier.height(RallyDefaultPadding))
+            TransactionWindow2()
 
-        Spacer(Modifier.height(RallyDefaultPadding))
+            Spacer(Modifier.height(RallyDefaultPadding))
+            AccountsCard(
+                onClickSeeAll = onClickSeeAllAccounts,
+                onAccountClick = onAccountClick
+            )
+            Spacer(Modifier.height(RallyDefaultPadding))
+            BillsCard(
+                onClickSeeAll = onClickSeeAllBills,
+                onBillClick = onBillClick
 
-        CreditsCard(onClickSeeAll = onClickSeeAllCredits, onCreditClick = onCreditClick)
+            )
+            Spacer(Modifier.height(RallyDefaultPadding))
+
+            DepositsCard(onClickSeeAll = onClickSeeAllDeposits, onDepositClick = onDepositClick)
+
+            Spacer(Modifier.height(RallyDefaultPadding))
+
+            CreditsCard(onClickSeeAll = onClickSeeAllCredits, onCreditClick = onCreditClick)
+
     }
 }
-
 /**
  * The Alerts card within the Rally Overview screen.
  */
+
+
+
+
+@Composable
+fun ExchangeRatesCard(exchangeRates: List<ExchangeRate>) {
+    OverviewScreenCard2(
+        title = "Exchange Rates",
+        data = exchangeRates
+    ) { exchangeRate ->
+        Column(Modifier.clickable { /* Обробка кліку на елемент */ }) {
+            Text(text = "Currency: ${exchangeRate.ccy}")
+            Text(text = "Base Currency: ${exchangeRate.base_ccy}")
+            Text(text = "Buy: ${exchangeRate.buy}")
+            Text(text = "Sale: ${exchangeRate.sale}")
+        }
+    }
+}
+
+
+@Composable
+private fun <T> OverviewScreenCard2(
+    title: String,
+    data: List<T>,
+    row: @Composable (T) -> Unit
+) {
+    Card {
+        Column {
+            Column(Modifier.padding(RallyDefaultPadding)) {
+                Text(text = title, style = MaterialTheme.typography.subtitle2)
+            }
+            Column(Modifier.padding(start = 16.dp, top = 4.dp, end = 8.dp)) {
+                data.forEach { item: T ->
+                    row(item)
+                    Spacer(Modifier.height(8.dp))
+                }
+            }
+        }
+    }
+}
+
 
 
 @Composable
@@ -253,6 +310,8 @@ private fun SeeAllButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
         Text(stringResource(R.string.see_all))
     }
 }
+
+
 
 private val RallyDefaultPadding = 12.dp
 

@@ -30,7 +30,6 @@ import com.example.compose.rally.ui.credits.CreditsScreen
 import com.example.compose.rally.ui.credits.SingleCreditScreen
 import com.example.compose.rally.ui.deposits.DepositsScreen
 import com.example.compose.rally.ui.deposits.SingleDepositScreen
-import com.example.compose.rally.ui.bills.SingleBillScreen
 import com.example.compose.rally.ui.overview.OverviewScreen
 
 @Composable
@@ -70,7 +69,8 @@ fun RallyNavHost(
                 },
                 onCreditClick = { depositType ->
                     navController.navigateToSingleCredit(depositType)
-                }
+                },
+
             )
         }
         composable(route = Accounts.route) {
