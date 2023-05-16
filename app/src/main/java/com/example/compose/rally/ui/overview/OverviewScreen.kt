@@ -23,7 +23,9 @@ import TransactionWindow
 import TransactionWindow2
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,6 +58,10 @@ import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
 import com.example.compose.rally.ui.components.DepositRow
 import com.example.compose.rally.ui.components.formatAmount
+import java.util.Locale
+
+
+
 
 
 @Composable
@@ -67,7 +73,8 @@ fun OverviewScreen(
     onAccountClick: (String) -> Unit = {},
     onBillClick: (String) -> Unit = {},
     onDepositClick: (String) -> Unit = {},
-    onCreditClick: (String) -> Unit = {},
+    onCreditClick: (String) -> Unit = {}
+
 ) {
 
     var exchangeRates by remember { mutableStateOf(emptyList<ExchangeRate>()) }
@@ -94,30 +101,30 @@ fun OverviewScreen(
         Spacer(Modifier.height(RallyDefaultPadding))
 
         TransactionWindow()
-            Spacer(Modifier.height(RallyDefaultPadding))
-            TransactionWindow2()
+        Spacer(Modifier.height(RallyDefaultPadding))
+        TransactionWindow2()
 
-            Spacer(Modifier.height(RallyDefaultPadding))
-            AccountsCard(
-                onClickSeeAll = onClickSeeAllAccounts,
-                onAccountClick = onAccountClick
-            )
-            Spacer(Modifier.height(RallyDefaultPadding))
-            BillsCard(
-                onClickSeeAll = onClickSeeAllBills,
-                onBillClick = onBillClick
+        Spacer(Modifier.height(RallyDefaultPadding))
+        AccountsCard(
+            onClickSeeAll = onClickSeeAllAccounts,
+            onAccountClick = onAccountClick
+        )
+        Spacer(Modifier.height(RallyDefaultPadding))
+        BillsCard(
+            onClickSeeAll = onClickSeeAllBills,
+            onBillClick = onBillClick
 
-            )
-            Spacer(Modifier.height(RallyDefaultPadding))
+        )
+        Spacer(Modifier.height(RallyDefaultPadding))
 
-            DepositsCard(onClickSeeAll = onClickSeeAllDeposits, onDepositClick = onDepositClick)
+        DepositsCard(onClickSeeAll = onClickSeeAllDeposits, onDepositClick = onDepositClick)
 
-            Spacer(Modifier.height(RallyDefaultPadding))
+        Spacer(Modifier.height(RallyDefaultPadding))
 
-            CreditsCard(onClickSeeAll = onClickSeeAllCredits, onCreditClick = onCreditClick)
-
+        CreditsCard(onClickSeeAll = onClickSeeAllCredits, onCreditClick = onCreditClick)
     }
 }
+
 /**
  * The Alerts card within the Rally Overview screen.
  */
@@ -350,8 +357,6 @@ private fun SeeAllButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
         Text(stringResource(R.string.see_all))
     }
 }
-
-
 
 private val RallyDefaultPadding = 12.dp
 

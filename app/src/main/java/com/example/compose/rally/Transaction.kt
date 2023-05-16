@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.data.Account
 import com.example.compose.rally.data.Bill
@@ -359,7 +360,7 @@ fun CreditWindow(
                         val credit = Credit(
                             name = name,
                             amount = amount.toFloatOrNull() ?: 0f,
-                            color = color
+                            color = color.value.toLong()
                         )
                         onSubmit(credit)
                     }
