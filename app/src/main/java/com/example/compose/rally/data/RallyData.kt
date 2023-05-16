@@ -16,8 +16,13 @@
 
 package com.example.compose.rally.data
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import kotlinx.parcelize.Parceler
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 /* Hard-coded data for the Rally sample. */
 
@@ -44,11 +49,12 @@ data class Deposit(
 )
 
 @Immutable
+@Parcelize
 data class Credit(
     val name: String,
     var amount: Float,
-    val color: Color
-)
+    val color: Long
+) : Parcelable
 
 /**
  * Pretend repository for user's data.
@@ -140,27 +146,27 @@ object UserData {
         Credit(
             "RedPay Credit",
             45.36f,
-            Color(0xFFFFDC78)
+           0xFFFFDC78
         ),
         Credit(
             "Rent",
             1200f,
-            Color(0xFFFF6951)
+            0xFFFF6951
         ),
         Credit(
             "TabFine Credit",
             87.33f,
-            Color(0xFFFFD7D0)
+            0xFFFFD7D0
         ),
         Credit(
             "ABC Loans",
             400f,
-            Color(0xFFFFAC12)
+            0xFFFFAC12
         ),
         Credit(
             "ABC Loans 2",
             77.4f,
-            Color(0xFFFFAC12)
+            0xFFFFAC12
         )
 
 

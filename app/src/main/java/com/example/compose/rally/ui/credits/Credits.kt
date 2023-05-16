@@ -139,7 +139,7 @@ fun CreditsScreen(
             items = filteredAndSortedCredit,
             amountsTotal = amountsTotal,
             amounts = { credit -> credit.amount },
-            colors = { credit -> credit.color },
+            colors = { credit -> Color(credit.color) },
             circleLabel = stringResource(R.string.due),
             rows = { credit ->
                 DepositRow(
@@ -148,7 +148,7 @@ fun CreditsScreen(
                     },
                     name = credit.name,
                     amount = credit.amount,
-                    color = credit.color
+                    color = Color(credit.color)
                 )
             }
         )
@@ -170,7 +170,7 @@ fun SingleCreditScreen(
 
     StatementBody(
         items = listOf(credit),
-        colors = { credit.color },
+        colors = { Color(credit.color) },
         amounts = { credit.amount },
         amountsTotal = credit.amount,
         circleLabel = credit.name,
@@ -179,7 +179,7 @@ fun SingleCreditScreen(
             DepositRow(
                 name = row.name,
                 amount = row.amount,
-                color = row.color
+                color = Color(row.color)
             )
             Button(onClick = {}, shape = RoundedCornerShape(100.dp),
                 modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth().requiredHeight(65.dp),
