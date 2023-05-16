@@ -41,12 +41,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.R
 import com.example.compose.rally.data.UserData
@@ -89,8 +91,9 @@ fun OverviewScreen(
 
 
         ExchangeRatesCard(exchangeRates = exchangeRates)
+        Spacer(Modifier.height(RallyDefaultPadding))
 
-            TransactionWindow()
+        TransactionWindow()
             Spacer(Modifier.height(RallyDefaultPadding))
             TransactionWindow2()
 
@@ -128,14 +131,51 @@ fun ExchangeRatesCard(exchangeRates: List<ExchangeRate>) {
         title = "Exchange Rates",
         data = exchangeRates
     ) { exchangeRate ->
-        Column(Modifier.clickable { /* Обробка кліку на елемент */ }) {
-            Text(text = "Currency: ${exchangeRate.ccy}")
-            Text(text = "Base Currency: ${exchangeRate.base_ccy}")
-            Text(text = "Buy: ${exchangeRate.buy}")
-            Text(text = "Sale: ${exchangeRate.sale}")
+        Column(
+            Modifier
+                .clickable { /* Обробка кліку на елемент */ }
+                .padding(12.dp)
+        ) {
+            Text(
+                text = "Currency: ${exchangeRate.ccy}",
+                style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = "Base Currency: ${exchangeRate.base_ccy}",
+                style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = 8.dp) //
+            ) {
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                ) {
+                    Text(
+                        text = "Buy: ${exchangeRate.buy}",
+                        style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp)
+                ) {
+                    Text(
+                        text = "Sale: ${exchangeRate.sale}",
+                        style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
+            }
         }
     }
 }
+
+
 
 
 @Composable
