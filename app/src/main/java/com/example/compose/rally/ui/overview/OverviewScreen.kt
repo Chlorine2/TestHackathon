@@ -16,7 +16,9 @@
 
 package com.example.compose.rally.ui.overview
 
-import PreviewApp
+
+import TransactionWindow
+import TransactionWindow2
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,6 +51,10 @@ import com.example.compose.rally.ui.components.DepositRow
 import com.example.compose.rally.ui.components.formatAmount
 import java.util.Locale
 
+
+
+
+
 @Composable
 fun OverviewScreen(
     onClickSeeAllAccounts: () -> Unit = {},
@@ -68,7 +74,9 @@ fun OverviewScreen(
             .semantics { contentDescription = "Overview Screen" }
     ) {
 
-        PreviewApp()
+        TransactionWindow()
+        Spacer(Modifier.height(RallyDefaultPadding))
+        TransactionWindow2()
 
         Spacer(Modifier.height(RallyDefaultPadding))
         AccountsCard(
@@ -215,7 +223,7 @@ private fun AccountsCard(onClickSeeAll: () -> Unit, onAccountClick: (String) -> 
  * The Bills card within the Rally Overview screen.
  */
 @Composable
-private fun BillsCard(onClickSeeAll: () -> Unit,  onBillClick: (String) -> Unit) {
+private fun BillsCard(onClickSeeAll: () -> Unit, onBillClick: (String) -> Unit) {
     val amount = UserData.bills.map { bill -> bill.amount }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.bills),

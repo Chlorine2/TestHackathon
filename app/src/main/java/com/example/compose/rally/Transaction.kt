@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,17 +18,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.rally.data.Account
 import com.example.compose.rally.data.Bill
+import com.example.compose.rally.data.Credit
+import com.example.compose.rally.data.Deposit
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.data.UserData.accounts
-import com.example.compose.rally.data.UserData.addBill
 import com.example.compose.rally.data.UserData.bills
 
 @Composable
-fun TransactionCard(onShowIncomeWindowChanged: (Boolean) -> Unit,     onShowBillsWindowChanged: (Boolean) -> Unit
+fun TransactionCard1(
+    onShowIncomeWindowChanged: (Boolean) -> Unit,
+    onShowBillsWindowChanged: (Boolean) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -63,6 +66,44 @@ fun TransactionCard(onShowIncomeWindowChanged: (Boolean) -> Unit,     onShowBill
 }
 
 @Composable
+fun TransactionCard2(
+    onShowCreditWindowChanged: (Boolean) -> Unit,
+    onShowDepositWindowChanged: (Boolean) -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp),
+        elevation = 8.dp,
+        backgroundColor = Color.White
+    ) {
+        Column(
+            modifier = Modifier.background(color = Color(0xFFf2f2f2)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Transaction",
+                style = MaterialTheme.typography.h6,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                TransactionButton(text = "Deposits"){
+                    onShowDepositWindowChanged(true)
+                }
+                TransactionButton(text = "Credits"){
+                    onShowCreditWindowChanged(true)
+                }
+
+            }
+        }
+    }
+}
+
+@Composable
 fun TransactionButton(text: String, onClick: () -> Unit) {
     Button(
         onClick = onClick,
@@ -74,9 +115,11 @@ fun TransactionButton(text: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun IncomeWindow(onSubmit: (Account) -> Unit) {
+fun IncomeWindow(
+    onSubmit: (Account) -> Unit,
+    onCancel: () -> Unit
+) {
     var name by remember { mutableStateOf("") }
-    var number by remember { mutableStateOf("") }
     var balance by remember { mutableStateOf("") }
     val color by remember { mutableStateOf(Color.White) }
 
@@ -94,40 +137,48 @@ fun IncomeWindow(onSubmit: (Account) -> Unit) {
             modifier = Modifier.fillMaxWidth()
         )
         TextField(
-            value = number,
-            onValueChange = { number = it },
-            label = { Text("Number") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        TextField(
             value = balance,
             onValueChange = { balance = it },
             label = { Text("Balance") },
             modifier = Modifier.fillMaxWidth()
         )
 
-        Button(
-            onClick = {
-                val existingAccount = accounts.find { it.name == name }
-                if (existingAccount != null) {
-                    val updatedBalance = existingAccount.balance + (balance.toFloatOrNull() ?: 0f)
-                    existingAccount.balance = updatedBalance
-                } else {
-                    val account = Account(
-                        name = name,
-                        balance = balance.toFloatOrNull() ?: 0f,
-                        color = color,
-                        number = 1
-                    )
-                    onSubmit(account)
-                }
-            },
-            modifier = Modifier.padding(top = 16.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Text(text = "Submit")
+            Button(
+                onClick = {
+                    val existingAccount = accounts.find { it.name == name }
+                    if (existingAccount != null) {
+                        val updatedBalance = existingAccount.balance + (balance.toFloatOrNull() ?: 0f)
+                        existingAccount.balance = updatedBalance
+                    } else {
+                        val account = Account(
+                            name = name,
+                            balance = balance.toFloatOrNull() ?: 0f,
+                            color = color,
+                        )
+                        onSubmit(account)
+                    }
+                },
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(text = "Submit")
+            }
+
+
+
+            Button(
+                onClick = onCancel,
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(text = "Cancel")
+            }
         }
     }
 }
+
 
 @Composable
 fun BillsWindow(
@@ -137,7 +188,7 @@ fun BillsWindow(
     var name by remember { mutableStateOf("") }
     var due by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
-    var color by remember { mutableStateOf(Color.White) }
+    val color by remember { mutableStateOf(Color.White) }
 
     Column(
         modifier = Modifier
@@ -201,18 +252,151 @@ fun BillsWindow(
     }
 }
 
+
 @Composable
-fun PreviewApp() {
+fun DepositWindow(
+    onSubmit: (Deposit) -> Unit,
+    onCancel: () -> Unit
+) {
+    var name by remember { mutableStateOf("") }
+    var amount by remember { mutableStateOf("") }
+    val color by remember { mutableStateOf(Color.White) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        TextField(
+            value = amount,
+            onValueChange = { amount = it },
+            label = { Text("Amount") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(
+                onClick = {
+                    val existingDeposit = UserData.deposits.find { it.name == name }
+                    if (existingDeposit != null) {
+                        val updatedAmount = existingDeposit.amount + (amount.toFloatOrNull() ?: 0f)
+                        existingDeposit.amount = updatedAmount
+                    } else {
+                        val deposit = Deposit(
+                            name = name,
+                            amount = amount.toFloatOrNull() ?: 0f,
+                            color = color
+                        )
+                        onSubmit(deposit)
+                    }
+                },
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(text = "Submit")
+            }
+
+            Button(
+                onClick = onCancel,
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(text = "Cancel")
+            }
+        }
+    }
+}
+
+@Composable
+fun CreditWindow(
+    onSubmit: (Credit) -> Unit,
+    onCancel: () -> Unit
+) {
+    var name by remember { mutableStateOf("") }
+    var amount by remember { mutableStateOf("") }
+    val color by remember { mutableStateOf(Color.White) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        TextField(
+            value = amount,
+            onValueChange = { amount = it },
+            label = { Text("Amount") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(
+                onClick = {
+                    val existingCredit = UserData.credits.find { it.name == name }
+                    if (existingCredit != null) {
+                        val updatedAmount = existingCredit.amount + (amount.toFloatOrNull() ?: 0f)
+                        existingCredit.amount = updatedAmount
+                    } else {
+                        val credit = Credit(
+                            name = name,
+                            amount = amount.toFloatOrNull() ?: 0f,
+                            color = color
+                        )
+                        onSubmit(credit)
+                    }
+                },
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(text = "Submit")
+            }
+
+            Button(
+                onClick = onCancel,
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(text = "Cancel")
+            }
+        }
+    }
+}
+
+
+
+@SuppressLint("MutableCollectionMutableState")
+@Composable
+fun TransactionWindow() {
     var showIncomeWindow by remember { mutableStateOf(false) }
     var showBillsWindow by remember { mutableStateOf(false) }
     val accounts by remember { mutableStateOf(UserData.accounts) }
     val bills by remember { mutableStateOf(UserData.bills) }
 
     if (showIncomeWindow) {
-        IncomeWindow { account ->
-            accounts.add(account)
-            showIncomeWindow = false
-        }
+        IncomeWindow(
+            onSubmit = { account ->
+                accounts.add(account)
+                showIncomeWindow = false
+            },
+            onCancel = { showIncomeWindow = false }
+        )
     } else if (showBillsWindow) {
         BillsWindow(
             onSubmit = { bill ->
@@ -227,12 +411,48 @@ fun PreviewApp() {
             onCancel = { showBillsWindow = false }
         )
     } else {
-        TransactionCard(
+        TransactionCard1(
             onShowIncomeWindowChanged = { show ->
                 showIncomeWindow = show
             },
             onShowBillsWindowChanged = { show ->
                 showBillsWindow = show
+            }
+        )
+    }
+}
+
+@SuppressLint("MutableCollectionMutableState")
+@Composable
+fun TransactionWindow2() {
+    var showCreditWindow by remember { mutableStateOf(false) }
+    val credits by remember { mutableStateOf(UserData.credits) }
+    var showDepositWindow by remember { mutableStateOf(false) }
+    val deposits by remember { mutableStateOf(UserData.deposits) }
+
+    if (showDepositWindow) {
+        DepositWindow(
+            onSubmit = { deposit ->
+                deposits.add(deposit)
+                showDepositWindow = false
+            },
+            onCancel = { showDepositWindow = false }
+        )
+    } else if (showCreditWindow) {
+        CreditWindow(
+            onSubmit = { credit ->
+                credits.add(credit)
+                showCreditWindow = false
+            },
+            onCancel = { showCreditWindow = false }
+        )
+    } else {
+        TransactionCard2(
+            onShowDepositWindowChanged = { show ->
+                showDepositWindow = show
+            },
+            onShowCreditWindowChanged = { show ->
+                showCreditWindow = show
             }
         )
     }
