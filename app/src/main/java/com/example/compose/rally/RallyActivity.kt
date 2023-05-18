@@ -16,19 +16,45 @@
 
 package com.example.compose.rally
 
+import RegistryModel
 import android.content.ClipData
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.rally.data.Account
@@ -39,6 +65,9 @@ import com.example.compose.rally.data.UserData
 import com.example.compose.rally.ui.components.RallyTabRow
 import com.example.compose.rally.ui.theme.RallyTheme
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 
 /**
@@ -113,21 +142,196 @@ fun RallyApp() {
         val currentScreen =
             rallyTabRowScreens.find { it.route == currentDestination?.route } ?: Overview
 
-        Scaffold(
-            topBar = {
-                RallyTabRow(
-                    allScreens = rallyTabRowScreens,
-                    onTabSelected = { newScreen ->
-                        navController.navigateSingleTopTo(newScreen.route)
-                    },
-                    currentScreen = currentScreen
+        if(sign_in().value) {
+
+            Scaffold(
+                topBar = {
+                    RallyTabRow(
+                        allScreens = rallyTabRowScreens,
+                        onTabSelected = { newScreen ->
+                            navController.navigateSingleTopTo(newScreen.route)
+                        },
+                        currentScreen = currentScreen
+                    )
+                }
+            ) { innerPadding ->
+                RallyNavHost(
+                    navController = navController,
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
-        ) { innerPadding ->
-            RallyNavHost(
-                navController = navController,
-                modifier = Modifier.padding(innerPadding)
-            )
         }
     }
+}
+
+
+@Composable
+fun sign_in() : MutableState<Boolean> {
+
+    val currentEmail = remember { mutableStateOf("") }
+    val tr = remember { mutableStateOf(false) }
+    val currentPassword = remember { mutableStateOf("") }
+    val registry = remember {mutableStateOf(false)}
+    val emailError = remember { mutableStateOf(false) }
+    val passwordError = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val currentExeption = remember { mutableStateOf("") }
+
+
+
+    Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)) {
+
+
+        OutlinedTextField(
+            value = currentEmail.value,
+            onValueChange = {
+                currentEmail.value = it
+            },
+            label = { Text(text = "Email") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+
+            shape = RoundedCornerShape(100),
+            singleLine = true,
+            isError = emailError.value
+        )
+        OutlinedTextField(
+            value = currentPassword.value,
+            onValueChange = {
+                currentPassword.value = it
+            },
+            label = { Text(text = "Password") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+
+            shape = RoundedCornerShape(100),
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password
+            ),
+            isError = passwordError.value
+
+        )
+        val apiService = remember { ApiCustomService.ApiServiceBuilder2.apiService }
+        val coroutineScope = rememberCoroutineScope()
+
+        Text(text = currentExeption.value, color = Color.Red)
+        Button(
+            onClick = {
+                emailError.value = currentEmail.value.length < 5 || currentEmail.value.length > 30
+                passwordError.value = currentPassword.value.length < 5 || currentEmail.value.length > 30
+                        || !currentPassword.value.matches(Regex("^[a-zA-Z0-9]+$"))
+                coroutineScope.launch {
+
+                if(!emailError.value && !passwordError.value) {
+                    try {
+                        if (registry.value) {
+                            val response = withContext(Dispatchers.IO) {
+                                apiService.Register(
+                                    RegistryModel(
+                                        username = currentEmail.value,
+                                        password = currentPassword.value
+                                    )
+                                )
+                            }
+                            if (response.token != "") {
+                                registry.value = !registry.value
+                                currentEmail.value = ""
+                                currentPassword.value = ""
+
+                                Toast.makeText(
+                                    context.applicationContext,
+                                    "successful registry",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } else {
+                            val response = withContext(Dispatchers.IO) {
+                                apiService.Authenticate(
+                                    RegistryModel(
+                                        username = currentEmail.value,
+                                        password = currentPassword.value
+                                    )
+                                )
+                            }
+                            if (response.token != "") {
+                                tr.value = true
+
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("teg", "API call failed ${e.localizedMessage}", e)
+                        if(e.localizedMessage?.contains("409") == true){
+                            passwordError.value = true
+                            emailError.value = true
+                            currentExeption.value = "This name is already used"
+                        }
+                        if(e.localizedMessage?.contains("404") == true){
+                            passwordError.value = true
+                            emailError.value = true
+                            currentExeption.value = "password or mail is wrong"
+                        }
+                    }
+                }
+            }
+                      }, shape = RoundedCornerShape(100.dp),
+            modifier = Modifier
+                .padding(vertical = 10.dp, horizontal = 10.dp)
+                .fillMaxWidth()
+                .requiredHeight(50.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface,),
+            elevation = ButtonDefaults.elevation(
+                defaultElevation = 6.dp,
+                pressedElevation = 8.dp,
+                disabledElevation = 0.dp
+            )
+        ) {
+
+            if(registry.value){
+                Text(text = "Registry")
+            }
+            else{
+                Text(text = "Sign In")
+            }
+
+        }
+        Button(
+            onClick = {
+                emailError.value = false
+                passwordError.value = false
+                registry.value = !registry.value
+                      currentEmail.value = ""
+                      currentPassword.value = ""
+                currentExeption.value = ""
+
+            },
+            shape = RoundedCornerShape(100.dp),
+            modifier = Modifier
+                .padding(vertical = 10.dp, horizontal = 10.dp)
+                .fillMaxWidth()
+                .requiredHeight(50.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary,),
+            elevation = ButtonDefaults.elevation(
+                defaultElevation = 6.dp,
+                pressedElevation = 8.dp,
+                disabledElevation = 0.dp
+            )
+        ) {
+            if(registry.value){
+                Text(text = "Sign In")
+            }
+            else{
+                Text(text = "Registry")
+            }
+
+        }
+    }
+    return tr
+
 }

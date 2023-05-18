@@ -38,6 +38,15 @@ interface RallyDestination {
 /**
  * Rally app navigation destinations
  */
+
+object Registry : RallyDestination {
+    override val icon = Icons.Filled.PieChart
+    override val route = "registry"
+}
+object SignIn : RallyDestination {
+    override val icon = Icons.Filled.PieChart
+    override val route = "sign_in"
+}
 object Overview : RallyDestination {
     override val icon = Icons.Filled.PieChart
     override val route = "overview"

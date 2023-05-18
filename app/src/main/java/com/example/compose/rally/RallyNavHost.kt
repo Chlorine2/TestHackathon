@@ -102,6 +102,10 @@ fun RallyNavHost(
                 },
             )
         }
+        composable(route = SignIn.route){
+            sign_in()
+        }
+
         composable(
             route = SingleAccount.routeWithArgs,
             arguments = SingleAccount.arguments,
