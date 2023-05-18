@@ -33,8 +33,8 @@ import com.example.compose.rally.data.UserData
 import com.example.compose.rally.data.UserData.bills
 import com.example.compose.rally.ui.accounts.DropdownMenuContainer
 import com.example.compose.rally.ui.components.BillRow
+import com.example.compose.rally.ui.components.ChangeAmount
 import com.example.compose.rally.ui.components.StatementBody
-import com.example.compose.rally.ui.accounts.DropdownMenuContainer
 
 
 /**
@@ -163,6 +163,24 @@ fun SingleBillScreen(
         navController.popBackStack()
     }
 
+    var showDialog by remember { mutableStateOf(false) }
+    val openDialog: () -> Unit = {
+        showDialog = true
+    }
+    val closeDialog: () -> Unit = {
+        showDialog = false
+    }
+    if (showDialog) {
+        ChangeAmount(
+            item = bill,
+            amountGetter = Bill::amount,
+            amountSetter = { item, amount ->
+                item.amount = amount
+            },
+            onCloseDialog = closeDialog
+        )
+    }
+
     StatementBody(
         items = listOf(bill),
         colors = { bill.color },
@@ -176,7 +194,7 @@ fun SingleBillScreen(
                 amount = row.amount,
                 color = row.color
             )
-            Button(onClick = {}, shape = RoundedCornerShape(100.dp),
+            Button(onClick = openDialog, shape = RoundedCornerShape(100.dp),
                 modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth().requiredHeight(65.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface,),
                 elevation = ButtonDefaults.elevation(

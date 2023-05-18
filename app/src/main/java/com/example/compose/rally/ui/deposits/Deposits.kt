@@ -1,12 +1,9 @@
 package com.example.compose.rally.ui.deposits
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -26,8 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,8 +31,7 @@ import com.example.compose.rally.R
 import com.example.compose.rally.data.Deposit
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.ui.accounts.DropdownMenuContainer
-import com.example.compose.rally.ui.accounts.SortingOption
-import com.example.compose.rally.ui.components.BillRow
+import com.example.compose.rally.ui.components.ChangeAmount
 import com.example.compose.rally.ui.components.DepositRow
 import com.example.compose.rally.ui.components.StatementBody
 
@@ -163,6 +157,31 @@ fun SingleDepositScreen(
         navController.popBackStack()
     }
 
+
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    val openDialog: () -> Unit = {
+        showDialog = true
+    }
+
+    val closeDialog: () -> Unit = {
+        showDialog = false
+    }
+
+    if (showDialog) {
+        ChangeAmount(
+            item = deposit,
+            amountGetter = Deposit::amount,
+            amountSetter = { item, amount ->
+                item.amount = amount
+            },
+            onCloseDialog = closeDialog
+        )
+    }
+
+
+
     StatementBody(
         items = listOf(deposit),
         colors = { deposit.color },
@@ -176,9 +195,13 @@ fun SingleDepositScreen(
                 amount = row.amount,
                 color = row.color
             )
-            Button(onClick = {}, shape = RoundedCornerShape(100.dp),
-                modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth().requiredHeight(65.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface,),
+            Button(onClick = openDialog,
+                shape = RoundedCornerShape(100.dp),
+                modifier = Modifier
+                    .padding(vertical = 10.dp)
+                    .fillMaxWidth()
+                    .requiredHeight(65.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
                 elevation = ButtonDefaults.elevation(
                     defaultElevation = 6.dp,
                     pressedElevation = 8.dp,
@@ -191,7 +214,10 @@ fun SingleDepositScreen(
             Button(
                 onClick = deleteDeposit,
                 shape = RoundedCornerShape(100.dp),
-                modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth().requiredHeight(65.dp),
+                modifier = Modifier
+                    .padding(vertical = 10.dp)
+                    .fillMaxWidth()
+                    .requiredHeight(65.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFB82100)),
                 elevation = ButtonDefaults.elevation(
                     defaultElevation = 6.dp,
@@ -205,3 +231,6 @@ fun SingleDepositScreen(
 
     }
 }
+
+
+

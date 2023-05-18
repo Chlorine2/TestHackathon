@@ -1,4 +1,6 @@
 import android.annotation.SuppressLint
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,8 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import com.example.compose.rally.R
 import com.example.compose.rally.data.Account
 import com.example.compose.rally.data.Bill
 import com.example.compose.rally.data.Credit
@@ -118,10 +120,11 @@ fun TransactionButton(text: String, onClick: () -> Unit) {
 @Composable
 fun IncomeWindow(
     onSubmit: (Account) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    showToast: (Int) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
-    var balance by remember { mutableStateOf("") }
+    var amount by remember { mutableStateOf("") }
     val color by remember { mutableStateOf(Color.White) }
 
     Column(
@@ -138,8 +141,8 @@ fun IncomeWindow(
             modifier = Modifier.fillMaxWidth()
         )
         TextField(
-            value = balance,
-            onValueChange = { balance = it },
+            value = amount,
+            onValueChange = { amount = it },
             label = { Text("Balance") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -150,24 +153,24 @@ fun IncomeWindow(
         ) {
             Button(
                 onClick = {
+                    checkConditionsAndShowToast(amount, showToast)
                     val existingAccount = accounts.find { it.name == name }
-                    if (existingAccount != null) {
-                        val updatedBalance = existingAccount.balance + (balance.toFloatOrNull() ?: 0f)
-                        existingAccount.balance = updatedBalance
-                    } else {
-                        val account = Account(
-                            name = name,
-                            balance = balance.toFloatOrNull() ?: 0f,
-                            color = color,
-                        )
-                        onSubmit(account)
-                    }
+                        if (existingAccount != null) {
+                            val updatedBalance = existingAccount.balance + (amount.toFloatOrNull() ?: 0f)
+                            existingAccount.balance = updatedBalance
+                        } else {
+                            val account = Account(
+                                name = name,
+                                balance = amount.toFloatOrNull() ?: 0f,
+                                color = color,
+                            )
+                            onSubmit(account)
+                        }
                 },
                 modifier = Modifier.padding(top = 16.dp)
             ) {
                 Text(text = "Submit")
             }
-
 
 
             Button(
@@ -184,7 +187,8 @@ fun IncomeWindow(
 @Composable
 fun BillsWindow(
     onSubmit: (Bill) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    showToast: (Int) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var due by remember { mutableStateOf("") }
@@ -224,6 +228,7 @@ fun BillsWindow(
         ) {
             Button(
                 onClick = {
+                    checkConditionsAndShowToast(amount, showToast)
                     val existingBill = bills.find { it.name == name }
                     if (existingBill != null) {
                         val updatedAmount = existingBill.amount + (amount.toFloatOrNull() ?: 0f)
@@ -257,7 +262,8 @@ fun BillsWindow(
 @Composable
 fun DepositWindow(
     onSubmit: (Deposit) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    showToast: (Int) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
@@ -289,6 +295,7 @@ fun DepositWindow(
         ) {
             Button(
                 onClick = {
+                    checkConditionsAndShowToast(amount, showToast)
                     val existingDeposit = UserData.deposits.find { it.name == name }
                     if (existingDeposit != null) {
                         val updatedAmount = existingDeposit.amount + (amount.toFloatOrNull() ?: 0f)
@@ -320,7 +327,8 @@ fun DepositWindow(
 @Composable
 fun CreditWindow(
     onSubmit: (Credit) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    showToast: (Int) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
@@ -352,6 +360,7 @@ fun CreditWindow(
         ) {
             Button(
                 onClick = {
+                    checkConditionsAndShowToast(amount, showToast)
                     val existingCredit = UserData.credits.find { it.name == name }
                     if (existingCredit != null) {
                         val updatedAmount = existingCredit.amount + (amount.toFloatOrNull() ?: 0f)
@@ -384,7 +393,7 @@ fun CreditWindow(
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun TransactionWindow() {
+fun TransactionWindow(context: Context) {
     var showIncomeWindow by remember { mutableStateOf(false) }
     var showBillsWindow by remember { mutableStateOf(false) }
     val accounts by remember { mutableStateOf(UserData.accounts) }
@@ -396,8 +405,11 @@ fun TransactionWindow() {
                 accounts.add(account)
                 showIncomeWindow = false
             },
-            onCancel = { showIncomeWindow = false }
+            onCancel = { showIncomeWindow = false },
+            showToast = { messageResId -> showToast(context, messageResId) }
+
         )
+
     } else if (showBillsWindow) {
         BillsWindow(
             onSubmit = { bill ->
@@ -409,7 +421,8 @@ fun TransactionWindow() {
                 bills.add(bill)
                 showBillsWindow = false
             },
-            onCancel = { showBillsWindow = false }
+            onCancel = { showBillsWindow = false },
+            showToast = { messageResId -> showToast(context, messageResId) }
         )
     } else {
         TransactionCard1(
@@ -425,7 +438,7 @@ fun TransactionWindow() {
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun TransactionWindow2() {
+fun TransactionWindow2(context: Context) {
     var showCreditWindow by remember { mutableStateOf(false) }
     val credits by remember { mutableStateOf(UserData.credits) }
     var showDepositWindow by remember { mutableStateOf(false) }
@@ -437,7 +450,8 @@ fun TransactionWindow2() {
                 deposits.add(deposit)
                 showDepositWindow = false
             },
-            onCancel = { showDepositWindow = false }
+            onCancel = { showDepositWindow = false },
+            showToast = { messageResId -> showToast(context, messageResId) }
         )
     } else if (showCreditWindow) {
         CreditWindow(
@@ -445,7 +459,8 @@ fun TransactionWindow2() {
                 credits.add(credit)
                 showCreditWindow = false
             },
-            onCancel = { showCreditWindow = false }
+            onCancel = { showCreditWindow = false },
+            showToast = { messageResId -> showToast(context, messageResId) }
         )
     } else {
         TransactionCard2(
@@ -457,4 +472,18 @@ fun TransactionWindow2() {
             }
         )
     }
+}
+
+
+fun checkConditionsAndShowToast(value: String, showToast: (Int) -> Unit) {
+    when {
+        value == "0" -> showToast(R.string.zero_value_toast)
+        value.matches("[a-zA-Z]+".toRegex()) -> showToast(R.string.alphabet_toast)
+        value.length > 10 -> showToast(R.string.long_value_toast)
+    }
+}
+
+fun showToast(context: Context, messageResId: Int) {
+    val message = context.getString(messageResId)
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

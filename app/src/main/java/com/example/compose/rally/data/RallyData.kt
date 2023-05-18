@@ -16,13 +16,10 @@
 
 package com.example.compose.rally.data
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
-import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
 
 /* Hard-coded data for the Rally sample. */
 
@@ -184,16 +181,16 @@ object UserData {
    //     accounts.add(Account(name, balance, color))
    // }
 //
-   // fun addBill(name: String, due: String, amount: Float, color: Color) {
-   //     this.bills.add(Bill(name, due, amount, color))
+   // fun addBill(name: String, due: String, balance: Float, color: Color) {
+   //     this.bills.add(Bill(name, due, balance, color))
    // }
 //
-   // fun addDeposit(name: String,  amount: Float, color: Color) {
-   //     this.deposits.add(Deposit(name, amount, color))
+   // fun addDeposit(name: String,  balance: Float, color: Color) {
+   //     this.deposits.add(Deposit(name, balance, color))
    // }
 //
-   // fun addCredit(name: String, amount: Float, color: Color) {
-   //     this.credits.add(Credit(name, amount, color))
+   // fun addCredit(name: String, balance: Float, color: Color) {
+   //     this.credits.add(Credit(name, balance, color))
    // }
 
     fun getBill(billName: String?): Bill {

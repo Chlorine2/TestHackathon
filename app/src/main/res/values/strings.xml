@@ -25,4 +25,7 @@
     <string name="bills">Bills</string>
     <string name="sort">Sort</string>
     <string name="see_all">SEE ALL</string>
+    <string name="zero_value_toast">It can\'t be 0</string>
+    <string name="alphabet_toast">It can\'t be alphabet symbols</string>
+    <string name="long_value_toast">Too long</string>
 </resources>

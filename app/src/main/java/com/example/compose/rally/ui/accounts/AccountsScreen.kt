@@ -17,7 +17,6 @@
 package com.example.compose.rally.ui.accounts
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -43,15 +42,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.compose.rally.R
+import com.example.compose.rally.data.Account
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.ui.components.AccountRow
+import com.example.compose.rally.ui.components.ChangeAmount
 import com.example.compose.rally.ui.components.StatementBody
 
 /**
@@ -198,6 +197,24 @@ fun SingleAccountScreen(
         navController.popBackStack()
     }
 
+    var showDialog by remember { mutableStateOf(false) }
+    val openDialog: () -> Unit = {
+        showDialog = true
+    }
+    val closeDialog: () -> Unit = {
+        showDialog = false
+    }
+    if (showDialog) {
+        ChangeAmount(
+            item = account,
+            amountGetter = Account::balance,
+            amountSetter = { item, amount ->
+                item.balance = amount
+            },
+            onCloseDialog = closeDialog
+        )
+    }
+
     StatementBody(
         items = listOf(account),
         colors = { account.color },
@@ -212,7 +229,7 @@ fun SingleAccountScreen(
                 color = row.color
             )
             Button(
-                onClick = {}, shape = RoundedCornerShape(100.dp),
+                onClick = openDialog, shape = RoundedCornerShape(100.dp),
                 modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth().requiredHeight(65.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface,),
                 elevation = ButtonDefaults.elevation(

@@ -23,9 +23,7 @@ import TransactionWindow
 import TransactionWindow2
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -58,10 +57,6 @@ import com.example.compose.rally.ui.components.AccountRow
 import com.example.compose.rally.ui.components.BillRow
 import com.example.compose.rally.ui.components.DepositRow
 import com.example.compose.rally.ui.components.formatAmount
-import java.util.Locale
-
-
-
 
 
 @Composable
@@ -100,7 +95,8 @@ fun OverviewScreen(
         ExchangeRatesCard(exchangeRates = exchangeRates)
         Spacer(Modifier.height(RallyDefaultPadding))
 
-        TransactionWindow()
+        val context = LocalContext.current
+        TransactionWindow(context = context)
         Spacer(Modifier.height(RallyDefaultPadding))
         AccountsCard(
             onClickSeeAll = onClickSeeAllAccounts,
@@ -114,7 +110,7 @@ fun OverviewScreen(
         )
         Spacer(Modifier.height(RallyDefaultPadding))
 
-        TransactionWindow2()
+        TransactionWindow2(context = context)
         Spacer(Modifier.height(RallyDefaultPadding))
         DepositsCard(onClickSeeAll = onClickSeeAllDeposits, onDepositClick = onDepositClick)
 

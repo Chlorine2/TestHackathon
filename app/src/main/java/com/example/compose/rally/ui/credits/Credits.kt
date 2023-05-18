@@ -23,8 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,15 +30,10 @@ import androidx.navigation.NavHostController
 import com.example.compose.rally.R
 import com.example.compose.rally.data.Credit
 import com.example.compose.rally.data.UserData
-import com.example.compose.rally.data.UserData.credits
 import com.example.compose.rally.ui.accounts.DropdownMenuContainer
+import com.example.compose.rally.ui.components.ChangeAmount
 import com.example.compose.rally.ui.components.DepositRow
 import com.example.compose.rally.ui.components.StatementBody
-import com.example.compose.rally.ui.deposits.SortingOptionDeposit
-import com.example.compose.rally.ui.accounts.DropdownMenuContainer
-import com.example.compose.rally.ui.credits.CreditsScreen
-
-
 
 
 enum class SortingOptionCredit {
@@ -168,6 +161,25 @@ fun SingleCreditScreen(
         navController.popBackStack()
     }
 
+
+    var showDialog by remember { mutableStateOf(false) }
+    val openDialog: () -> Unit = {
+        showDialog = true
+    }
+    val closeDialog: () -> Unit = {
+        showDialog = false
+    }
+    if (showDialog) {
+        ChangeAmount(
+            item = credit,
+            amountGetter = Credit::amount,
+            amountSetter = { item, amount ->
+                item.amount = amount
+            },
+            onCloseDialog = closeDialog
+        )
+    }
+
     StatementBody(
         items = listOf(credit),
         colors = { Color(credit.color) },
@@ -181,7 +193,7 @@ fun SingleCreditScreen(
                 amount = row.amount,
                 color = Color(row.color)
             )
-            Button(onClick = {}, shape = RoundedCornerShape(100.dp),
+            Button(onClick = openDialog, shape = RoundedCornerShape(100.dp),
                 modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth().requiredHeight(65.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface,),
                 elevation = ButtonDefaults.elevation(
@@ -210,3 +222,4 @@ fun SingleCreditScreen(
 
     }
 }
+
