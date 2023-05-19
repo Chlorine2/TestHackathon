@@ -11,8 +11,13 @@ data class ExchangeRate(
     val buy: String,
     val sale: String
 )
+data class AuthModel(
+    val username: String,
+    val password: String,
+)
 data class RegistryModel(
     val username: String,
+    val email : String,
     val password: String,
 )
 data class Token(
@@ -45,9 +50,9 @@ interface ApiService {
 
 interface ApiCustomService {
     @POST("auth/register")
-    suspend fun Register(@Body data: RegistryModel): Token
+    suspend fun Register(@Body data: RegistryModel)
     @POST("auth/authenticate")
-    suspend fun Authenticate(@Body data: RegistryModel): Token
+    suspend fun Authenticate(@Body data: AuthModel): Token
     object ApiServiceBuilder2 {
         private const val BASE_URL = "https://azn-server.azurewebsites.net/"
 
