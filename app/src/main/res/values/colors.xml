@@ -15,5 +15,5 @@
   -->
 <resources>
     <color name="statusBarColor">#EFEFEF</color>
-    <color name="backgroundColor">#FFFFFF</color>
+    <color name="backgroundColor">#E4FFF9</color>
 </resources>

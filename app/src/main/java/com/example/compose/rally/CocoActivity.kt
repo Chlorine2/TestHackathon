@@ -16,10 +16,8 @@
 
 package com.example.compose.rally
 
-import ApiCustomService.ApiServiceBuilder2.apiService
 import AuthModel
 import RegistryModel
-import android.content.ClipData
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -29,7 +27,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,13 +41,11 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,7 +54,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.rally.data.Account
@@ -73,9 +67,6 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.HttpException
-import java.io.IOException
-import java.lang.reflect.Type
 
 /**
  * This Activity recreates part of the Rally Material Study from
@@ -95,28 +86,31 @@ class RallyActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val sharedPreferences = getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
-        val savedAccountsJson = sharedPreferences.getString(Accounts.route, null)
+        val savedAccountsJson = sharedPreferences.getString(Accounts.route + "1", null)
         UserData.accounts = if (savedAccountsJson != null) {
+
             Gson().fromJson(savedAccountsJson, Array<Account>::class.java).toMutableList()
         } else {
             UserData.accounts
         }
 
-        val savedBillsJson = sharedPreferences.getString(Bills.route, null)
+        val savedBillsJson = sharedPreferences.getString(Bills.route + "1", null)
         UserData.bills = if (savedBillsJson != null) {
+
             Gson().fromJson(savedBillsJson, Array<Bill>::class.java).toMutableList()
         } else {
             UserData.bills
         }
 
-        val savedDepositsJson = sharedPreferences.getString(Deposits.route, null)
+        val savedDepositsJson = sharedPreferences.getString(Deposits.route + "1", null)
         UserData.deposits = if (savedDepositsJson != null) {
+
             Gson().fromJson(savedDepositsJson, Array<Deposit>::class.java).toMutableList()
         } else {
             UserData.deposits
         }
 
-        val savedCreditsJson = sharedPreferences.getString(Credits.route, null)
+        val savedCreditsJson = sharedPreferences.getString(Credits.route + "1", null)
         UserData.credits = if (savedCreditsJson != null) {
             Gson().fromJson(savedCreditsJson, Array<Credit>::class.java).toMutableList()
         } else {
@@ -146,10 +140,10 @@ class RallyActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         val sharedPreferences = getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
-        sharedPreferences.saveAppState(UserData.accounts, Accounts.route)
-        sharedPreferences.saveAppState(UserData.credits, Credits.route)
-        sharedPreferences.saveAppState(UserData.deposits, Deposits.route)
-        sharedPreferences.saveAppState(UserData.bills, Bills.route)
+        sharedPreferences.saveAppState(UserData.accounts, Accounts.route + "1")
+        sharedPreferences.saveAppState(UserData.credits, Credits.route + "1")
+        sharedPreferences.saveAppState(UserData.deposits, Deposits.route + "1")
+        sharedPreferences.saveAppState(UserData.bills, Bills.route + "1")
 
 
     }
@@ -160,13 +154,13 @@ class RallyActivity : ComponentActivity() {
 @Composable
 fun Nothing(){
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
+        modifier = Modifier.fillMaxSize().background(Color(0xFFE4FFF9))) {
 
 
         Text(
             text = "Loading...",
             Modifier
-                .background(MaterialTheme.colors.background)
+                .background(Color(0xFFE4FFF9))
         )
     }
 
@@ -176,7 +170,7 @@ fun Nothing(){
 fun Error(retryAction: () -> Unit){
 
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
+        modifier = Modifier.fillMaxSize().background(Color(0xFFE4FFF9))) {
 
 
         Text(

@@ -18,6 +18,6 @@
     <style name="Theme.Rally" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:statusBarColor">@color/statusBarColor</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:windowBackground">?attr/colorSurface</item>
+        <item name="android:windowBackground">@color/backgroundColor</item>
     </style>
 </resources>
