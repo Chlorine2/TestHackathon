@@ -11,6 +11,9 @@ solution, this program is designed to meet your needs. In the following
 documentation, you will find detailed instructions on installation, configuration,
 and utilization of the program, along with code examples and troubleshooting
 information.
+
+
+........................................................
 Requirements
 Minimum system requirements for the program:
 Operating System: Android version 5.0 or higher	
