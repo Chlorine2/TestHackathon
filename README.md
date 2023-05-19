@@ -14,6 +14,7 @@ information.
 
 
 ........................................................
+
 Requirements
 Minimum system requirements for the program:
 Operating System: Android version 5.0 or higher	
